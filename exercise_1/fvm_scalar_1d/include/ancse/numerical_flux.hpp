@@ -56,9 +56,12 @@ class LaxFriedrichs {
         double dx = grid.dx;
         double dt = simulation_time->dt;
 
-        // Implement the LaxFriedrichs flux
-        return 0.0;
+        auto fL = model.flux(uL);
+        auto fR = model.flux(uR);
 
+        double flux{ 0.5 * (fL + fR) };
+        flux -= (dx / (2 * dt)) * (fR - fL);
+        return flux;
     }
 
   private:
