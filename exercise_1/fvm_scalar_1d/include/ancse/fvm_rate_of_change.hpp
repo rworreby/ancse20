@@ -8,6 +8,8 @@
 #include <ancse/simulation_time.hpp>
 #include <memory>
 
+#include <iostream>
+
 //----------------FVMRateOfChangeBegin----------------
 /// Compute the rate of change due to FVM.
 /** The semidiscrete approximation of a PDE using FVM is
@@ -29,7 +31,16 @@ class FVMRateOfChange : public RateOfChange {
 
     virtual void operator()(Eigen::VectorXd &dudt,
                             const Eigen::VectorXd &u0) const override {
-        // implement the flux loop here.
+        double fL{ 0.0 }, fR{ 0.0 };
+        int const grid_lim{ grid.n_cells - grid.n_ghost };
+
+        for (int i = grid.n_ghost-1; i < grid_lim; ++i) {
+            fL = fR;
+            auto [uL, uR] = reconstruction(u0, i);
+            // Using -(fR - fL) = (fL - fR)
+            fR = numerical_flux(uL, uR);
+            dudt(i) = (fL - fR) / grid.dx;
+        }
     }
 
   private:
