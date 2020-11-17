@@ -1,0 +1,16 @@
+{
+  "output": "sine-",
+
+  "boundary_condition": "outflow",
+  "reconstruction": "minmod",
+  "time_integrator": "ssp2",
+  "flux": "rusanov",
+
+  "initial_conditions": "sine",
+
+  "n_interior_cells": 100,
+  "n_ghost": 2,
+
+  "t_end": 1.0,
+  "cfl_number": 1.10
+}

@@ -1,0 +1,16 @@
+{
+  "output": "jump-",
+
+  "boundary_condition": "outflow",
+  "reconstruction": "monotonized_central",
+  "time_integrator": "ssp2",
+  "flux": "godunov",
+
+  "initial_conditions": "ex2",
+
+  "n_interior_cells": 500,
+  "n_ghost": 2,
+
+  "t_end": 4.0,
+  "cfl_number": 0.5
+}
