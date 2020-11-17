@@ -6,6 +6,9 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 
+import seaborn as sns
+sns.set()
+
 
 def load_json(filename):
     with open(filename, "r") as f:
