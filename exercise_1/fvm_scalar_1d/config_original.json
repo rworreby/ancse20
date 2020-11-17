@@ -1,0 +1,15 @@
+{
+  "output": "testing-",
+
+  "initial_conditions": "sine",
+  "boundary_condition": "outflow",
+  "reconstruction": "minmod",
+  "time_integrator": "forward_euler",
+  "flux": "central_flux",
+
+  "n_interior_cells": 100,
+  "n_ghost": 2,
+
+  "t_end": 1.0,
+  "cfl_number": 0.45
+}
