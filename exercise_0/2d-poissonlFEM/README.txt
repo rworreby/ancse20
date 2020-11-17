@@ -30,5 +30,3 @@ You can build the whole program using
 If you used cmake, you can now run the executables using
 
     ./fem2d
-
-
