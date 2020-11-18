@@ -37,8 +37,8 @@ class FVMRateOfChange : public RateOfChange {
         for (int i = grid.n_ghost-1; i < grid_lim; ++i) {
             fL = fR;
             auto [uL, uR] = reconstruction(u0, i);
-            // Using -(fR - fL) = (fL - fR)
             fR = numerical_flux(uL, uR);
+            // From -(fR - fL) = (fL - fR)
             dudt(i) = (fL - fR) / grid.dx;
         }
     }
