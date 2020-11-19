@@ -75,6 +75,8 @@ class PWLinearReconstruction {
         double uL = 0.0;
         double uR = 0.0;
 
+        uL = ub + 0.5 * slope_limiter(uc-ub, ub-ua);
+        uR = uc - 0.5 * slope_limiter(ud-uc, uc-ub);
 
         return {uL, uR};
     }
