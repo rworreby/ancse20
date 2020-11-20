@@ -31,10 +31,12 @@ class FVMRateOfChange : public RateOfChange {
 
     virtual void operator()(Eigen::VectorXd &dudt,
                             const Eigen::VectorXd &u0) const override {
-        double fL{ 0.0 }, fR{ 0.0 };
         int const grid_lim{ grid.n_cells - grid.n_ghost };
 
-        for (int i = grid.n_ghost-1; i < grid_lim; ++i) {
+        double fL{ 0.0 };
+        auto [uL, uR] = reconstruction(u0, grid.n_ghost-1);
+        double fR{ numerical_flux(uL, uR) };
+        for (int i = grid.n_ghost; i < grid_lim; ++i) {
             fL = fR;
             auto [uL, uR] = reconstruction(u0, i);
             fR = numerical_flux(uL, uR);
