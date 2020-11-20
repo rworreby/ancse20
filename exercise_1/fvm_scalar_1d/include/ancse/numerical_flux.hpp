@@ -137,7 +137,7 @@ class Godunov {
         auto fL = model.flux(uL);
         auto fR = model.flux(uR);
 
-        // TODO: implement Godunov Flux
+        return std::max(model.flux(std::max(uL, 0.0)), model.flux(std::min(uR, 0.0)));
     }
 
   private:
