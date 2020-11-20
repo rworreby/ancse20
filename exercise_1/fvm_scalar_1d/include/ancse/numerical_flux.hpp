@@ -60,7 +60,7 @@ class LaxFriedrichs {
         auto fR = model.flux(uR);
 
         double flux{ 0.5 * (fL + fR) };
-        flux -= (dx / (2 * dt)) * (fR - fL);
+        flux -= (dx / (2 * dt)) * (uR - uL);
         return flux;
     }
 
