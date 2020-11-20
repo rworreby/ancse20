@@ -18,6 +18,16 @@ inline double minmod(double a, double b) {
     return 0.5 * (sign(a) + sign(b)) * std::min(std::abs(a), std::abs(b));
 }
 
+inline double minmod(double a, double b, double c) {
+    if(sign(a) == sign(b) == sign(c)){
+        return 0.5 * sign(a) *
+               std::min(std::min(std::abs(a), std::abs(b)), std::abs(c));
+    }
+    else{
+        return 0;
+    }
+}
+
 struct MinMod {
     inline double operator()(double sL, double sR) const {
         return minmod(sL, sR);
@@ -63,6 +73,35 @@ struct Superbee {
     }
 };
 //------------SlopeLimiterSuperbeeEnd-------------
+
+
+//--------------SlopeLimiterMCBegin---------------
+inline double monotonized_central(double a, double b) {
+    double ab{ a + b };
+
+    return minmod(2*a, 0.5*ab, 2*b);
+}
+
+struct MonotonizedCentral {
+    inline double operator()(double sL, double sR) const {
+        return monotonized_central(sL, sR);
+    }
+};
+//---------------SlopeLimiterMCEnd----------------
+
+
+//--------------SlopeLimiterVLBegin---------------
+inline double van_leer(double a, double b) {
+    return (std::abs(a)*b + b*std::abs(a)) / (std::abs(a) + std::abs(b));
+
+}
+
+struct VanLeer {
+    inline double operator()(double sL, double sR) const {
+        return van_leer(sL, sR);
+    }
+};
+//---------------SlopeLimiterVLEnd----------------
 
 
 class PWConstantReconstruction {
