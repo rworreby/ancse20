@@ -57,6 +57,7 @@ std::shared_ptr<RateOfChange> make_fvm_rate_of_change(
     REGISTER_RECONSTRUCTION("superbee", PWLinearReconstruction{Superbee{}})
     REGISTER_RECONSTRUCTION("monotonized_central",
                             PWLinearReconstruction{MonotonizedCentral{}})
+    REGISTER_RECONSTRUCTION("van_leer", PWLinearReconstruction{VanLeer{}})
 
     throw std::runtime_error(fmt::format(
         "Unknown reconstruction. [{}]", std::string(config["reconstruction"])));
