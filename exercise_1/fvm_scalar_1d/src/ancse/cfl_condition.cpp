@@ -1,5 +1,4 @@
 #include <ancse/cfl_condition.hpp>
-#include <limits>
 
 //----------------StandardCFLConditionDefnBegin----------------
 StandardCFLCondition::StandardCFLCondition(const Grid &grid,
