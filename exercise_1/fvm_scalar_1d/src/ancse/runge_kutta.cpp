@@ -53,10 +53,10 @@ operator()(Eigen::VectorXd &u1, const Eigen::VectorXd &u0, double dt) const {
     // You can reduce memory consumption by using `u1` as the temporary
     // buffer `u_star`.
 
-    (*boundary_condition)(u1);
     (*rate_of_change)(dudt, u0);
     u_star = u0 + dt * dudt;
     u1 = u_star + dt * dudt;
+    u1 = 0.5 * (u0 + u1);
     (*boundary_condition)(u1);
 }
 //----------------SSP2DefnEnd----------------
