@@ -124,20 +124,16 @@ class Roe {
 
 //-------------FluxGodunovBegin-------------
 /// Godunov numerical flux.
+/** This flux works only for Burgers equation as the minimum of our
+ *  parabola is at 0 (argmin of f is 0).
+ */
 class Godunov {
   public:
-    // Note: This version is a bit tricky. A numerical flux should be
-    //       a function of the two trace values at the interface, i.e. what we
-    //       call `uL`, `uR`. However, it requires 'dt' and 'dx'. Therefore,
-    //       these need to be made available to the flux. This is one of the
-    //       reasons why `SimulationTime`.
     Godunov(const Model &model) : model(model) {}
 
     double operator()(double uL, double uR) const {
-        auto fL = model.flux(uL);
-        auto fR = model.flux(uR);
-
-        return std::max(model.flux(std::max(uL, 0.0)), model.flux(std::min(uR, 0.0)));
+        return std::max(model.flux(std::max(uL, 0.0)),
+                        model.flux(std::min(uR, 0.0)));
     }
 
   private:
@@ -148,19 +144,14 @@ class Godunov {
 
 //---------------FluxEOBegin----------------
 /// Engquist-Osher numerical flux.
+/** This flux works only for Burgers equation as the minimum of our
+ *  parabola is at 0 (argmin of f is 0).
+ */
 class EngquistOsher {
   public:
-    // Note: This version is a bit tricky. A numerical flux should be
-    //       a function of the two trace values at the interface, i.e. what we
-    //       call `uL`, `uR`. However, it requires 'dt' and 'dx'. Therefore,
-    //       these need to be made available to the flux. This is one of the
-    //       reasons why `SimulationTime`.
     EngquistOsher(const Model &model) : model(model) {}
 
     double operator()(double uL, double uR) const {
-        auto fL = model.flux(uL);
-        auto fR = model.flux(uR);
-
         return model.flux(std::max(uL, 0.0)) + model.flux(std::min(uR, 0.0));
     }
 
