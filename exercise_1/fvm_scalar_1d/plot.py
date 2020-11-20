@@ -21,7 +21,7 @@ def load_snapshot(filename):
 
 
 def plot_snapshot(t, x, u):
-    plt.plot(x, u, marker="s", linestyle="-")
+    plt.plot(x, u, marker=".", linestyle="-")
     plt.title(f"t = {t:0.3f}")
 
 
@@ -36,5 +36,5 @@ if __name__ == "__main__":
     for fn in files:
         t, x, u = load_snapshot(fn)
         plot_snapshot(t, x, u)
-        plt.pause(0.01)
+        plt.pause(0.02)
         plt.clf()
