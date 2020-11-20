@@ -26,6 +26,9 @@ deduce_numerical_flux(const Grid &grid,
     REGISTER_NUMERICAL_FLUX("rusanov", Rusanov, Rusanov(model))
     REGISTER_NUMERICAL_FLUX("roe", Roe, Roe(model))
     REGISTER_NUMERICAL_FLUX("godunov", Godunov, Godunov(model))
+    REGISTER_NUMERICAL_FLUX("engquist_osher",
+                            EngquistOsher,
+                            EngquistOsher(model))
 
     // Register the other numerical fluxes.
 
