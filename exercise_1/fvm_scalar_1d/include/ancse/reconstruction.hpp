@@ -13,20 +13,35 @@
 inline double sign(double a) { return copysign(1.0, a); }
 
 
-//----------------SlopeLimiterABegin----------------
+//-------------SlopeLimiterMinModBegin------------
 inline double minmod(double a, double b) {
     return 0.5 * (sign(a) + sign(b)) * std::min(std::abs(a), std::abs(b));
 }
 
-//----------------SlopeLimiterAEnd----------------
-
-//----------------SlopeLimiterBBegin----------------
 struct MinMod {
     inline double operator()(double sL, double sR) const {
         return minmod(sL, sR);
     }
 };
-//----------------SlopeLimiterBEnd----------------
+//------------SlopeLimiterMinModEnd---------------
+
+//------------SlopeLimiterMinAbsBegin-------------
+inline double minabs(double a, double b) {
+    double abs_a{ std::abs(a) };
+    double abs_b{ std::abs(b) };
+
+    if(abs_a == abs_b){
+        return (a + b) / 2;
+    }
+    return abs_a < abs_b ? a : b;
+}
+
+struct MinAbs {
+    inline double operator()(double sL, double sR) const {
+        return minabs(sL, sR);
+    }
+};
+//-------------SlopeLimiterMinAbsEnd--------------
 
 
 class PWConstantReconstruction {
