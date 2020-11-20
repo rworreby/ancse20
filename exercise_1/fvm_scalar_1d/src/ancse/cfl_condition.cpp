@@ -14,7 +14,7 @@ double StandardCFLCondition::operator()(const Eigen::VectorXd &u) const {
     auto n_ghost = grid.n_ghost;
 
     double max_fp{ std::numeric_limits<double>::lowest() };
-    for (int i = n_ghost-1; i < n_cells - n_ghost; i++) {
+    for (int i = n_ghost; i < n_cells - n_ghost; i++) {
         if(max_fp < model.max_eigenvalue(u(i))){
             max_fp = model.max_eigenvalue(u(i));
         }
