@@ -25,6 +25,7 @@ struct MinMod {
 };
 //------------SlopeLimiterMinModEnd---------------
 
+
 //------------SlopeLimiterMinAbsBegin-------------
 inline double minabs(double a, double b) {
     double abs_a{ std::abs(a) };
@@ -42,6 +43,26 @@ struct MinAbs {
     }
 };
 //-------------SlopeLimiterMinAbsEnd--------------
+
+
+//-----------SlopeLimiterSuperbeeBegin------------
+inline double maxmod(double a, double b) {
+    return 0.5 * (sign(a) + sign(b)) * std::max(std::abs(a), std::abs(b));
+}
+
+inline double superbee(double a, double b) {
+    double sL{ minmod(a, 2*b) };
+    double sR{ minmod(2*a, b) };
+
+    return maxmod(sL, sR);
+}
+
+struct Superbee {
+    inline double operator()(double sL, double sR) const {
+        return superbee(sL, sR);
+    }
+};
+//------------SlopeLimiterSuperbeeEnd-------------
 
 
 class PWConstantReconstruction {
