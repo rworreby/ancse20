@@ -50,6 +50,7 @@ std::shared_ptr<RateOfChange> make_fvm_rate_of_change(
 
     REGISTER_RECONSTRUCTION("minmod", PWLinearReconstruction{MinMod{}})
     REGISTER_RECONSTRUCTION("minabs", PWLinearReconstruction{MinAbs{}})
+    REGISTER_RECONSTRUCTION("superbee", PWLinearReconstruction{Superbee{}})
 
     throw std::runtime_error(fmt::format(
         "Unknown reconstruction. [{}]", std::string(config["reconstruction"])));
