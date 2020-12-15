@@ -90,13 +90,13 @@ class Burgers : public Model {
 /// Euler equations
 class Euler : public Model {
   public:
-    
+
     Eigen::VectorXd flux(const Eigen::VectorXd &u) const override;
-    
+
     Eigen::VectorXd eigenvalues(const Eigen::VectorXd &u) const override;
 
     Eigen::MatrixXd eigenvectors(const Eigen::VectorXd &u) const override;
-    
+
     double max_eigenvalue(const Eigen::VectorXd &u) const override;
 
     Eigen::VectorXd cons_to_prim(const Eigen::VectorXd &u_cons) const override;
@@ -106,19 +106,15 @@ class Euler : public Model {
     Eigen::VectorXd roe_avg(const Eigen::VectorXd &,
                             const Eigen::VectorXd &) const override;
 
-    ///  ANCSE_COMMENT Add more functions if needed.
     //----------------ModelEulerBegin----------------
     inline std::tuple<double, double, double>
     primitive(const Eigen::VectorXd &u_cons) const
     {
+        double rho{ u_cons[0] };
+        double v{ u_cons[1] / u_cons[0] };
+        double p{ pressure(rho, v, u_cons[2]) };
 
-        ///  ANCSE_COMMENT Convert conservative to primitive;
-        ///  ANCSE_COMMENT double rho=0.;
-        ///  ANCSE_COMMENT double v=0.;
-        ///  ANCSE_COMMENT double p=0.;
-        ///  ANCSE_COMMENT return std::make_tuple (rho, v, p);
-
-
+        return std:make_tuple(rho, v, p);
     }
 
     inline double pressure(double rho, double v, double E) const
