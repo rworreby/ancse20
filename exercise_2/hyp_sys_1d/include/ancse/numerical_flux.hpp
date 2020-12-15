@@ -61,7 +61,11 @@ class LaxFriedrichs {
                                const Eigen::VectorXd &uR) const {
         double dx = grid.dx;
         double dt = simulation_time->dt;
-        return Eigen::VectorXd();
+
+        auto fL{ model->flux(uL) };
+        auto fR{ model->flux(uR) };
+
+        return 0.5 * ((fL + fR) - (dx / dt) * (fR - fL));
     }
 
   private:
@@ -83,7 +87,15 @@ class Rusanov {
     Eigen::VectorXd operator()(const Eigen::VectorXd &uL,
                                const Eigen::VectorXd &uR) const
     {
-        return Eigen::VectorXd();
+        double const max_eval{
+            std::max(model->max_eigenvalue(uL),
+            model->max_eigenvalue(uR))
+        };
+
+        auto fL{ model->flux(uL) };
+        auto fR{ model->flux(uR) };
+
+        return 0.5 * ((fL + fR) - max_eval * (fR - fL));
     }
 
   private:
@@ -116,7 +128,7 @@ class Roe{
 
 /// HLL flux.
 /** This requires knowledge about the model. */
-//----------------FluxHLLBegin---------------- 
+//----------------FluxHLLBegin----------------
 class HLL {
   public:
     explicit HLL(const std::shared_ptr<Model> &model) : model(model) {}
@@ -130,13 +142,13 @@ class HLL {
   private:
     std::shared_ptr<Model> model;
 };
-//----------------FluxHLLEnd---------------- 
+//----------------FluxHLLEnd----------------
 
 /// HLLC flux
 /** This requires knowledge about the model.
  *  This version is for the Euler equation.
  */
-//----------------FluxHLLCEulerBegin----------------  
+//----------------FluxHLLCEulerBegin----------------
 class HLLCEuler {
   public:
     explicit HLLCEuler(const std::shared_ptr<Euler> &model)
@@ -154,7 +166,7 @@ class HLLCEuler {
     std::shared_ptr<Euler> model;
     int n_vars;
 };
-//----------------FluxHLLCEulerEnd----------------  
+//----------------FluxHLLCEulerEnd----------------
 
 
 
