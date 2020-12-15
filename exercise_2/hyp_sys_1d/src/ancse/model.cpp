@@ -17,28 +17,48 @@ Eigen::VectorXd Euler::flux(const Eigen::VectorXd &u) const
 
 Eigen::VectorXd Euler::eigenvalues(const Eigen::VectorXd &u) const
 {
-    return Eigen::VectorXd::Zero(n_vars);
+    double rho, v, p;
+    std::tie(rho, v, p) = primitive(u);
+
+    double c{ sound_speed(rho, p) };
+
+    return eigenvalues(v, c);
 }
 
 Eigen::MatrixXd Euler::eigenvectors(const Eigen::VectorXd &u) const
 {
-    return Eigen::MatrixXd::Zero(n_vars, n_vars);
+    double rho, v, p;
+    std::tie(rho, v, p) = primitive(u);
+
+    double E = energy(rho, v, p);
+    double H = enthalpy(rho, E, p);
+
+    return eigenvectors(v, H);
 }
 
 double Euler::max_eigenvalue(const Eigen::VectorXd &u) const
 {
-    return 0;
+    return u(2);
 }
-
 
 Eigen::VectorXd Euler::cons_to_prim(const Eigen::VectorXd &u_cons) const
 {
-    return Eigen::VectorXd::Zero(n_vars);
+    double rho, v, p;
+    std::tie(rho, v, p) = primitive(u_cons);
+
+    Eigen::VectorXd u_prim(n_vars);
+    u_prim << rho, v, p;
+
+    return u_prim;
 }
 
 Eigen::VectorXd Euler::prim_to_cons(const Eigen::VectorXd &u_prim) const
 {
-    return Eigen::VectorXd::Zero(n_vars);
+    double E = energy(u_prim(0), u_prim(1), u_prim(2));
+
+    Eigen::VectorXd u_cons(n_vars);
+    u_cons << u_prim(0), u_prim(0)*u_prim(1), E;
+    return u_cons;
 }
 
 Eigen::VectorXd Euler::roe_avg(const Eigen::VectorXd &uL,
