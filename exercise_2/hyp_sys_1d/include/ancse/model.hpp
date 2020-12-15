@@ -110,9 +110,9 @@ class Euler : public Model {
     inline std::tuple<double, double, double>
     primitive(const Eigen::VectorXd &u_cons) const
     {
-        double rho{ u_cons[0] };
-        double v{ u_cons[1] / u_cons[0] };
-        double p{ pressure(rho, v, u_cons[2]) };
+        double rho{ u_cons(0) };
+        double v{ u_cons(1) / u_cons(0) };
+        double p{ pressure(rho, v, u_cons(2) };
 
         return std:make_tuple(rho, v, p);
     }
@@ -139,16 +139,23 @@ class Euler : public Model {
 
     inline Eigen::VectorXd eigenvalues(double v, double c) const
     {
-
         Eigen::VectorXd eigvals(n_vars);
-        ///  ANCSE_COMMENT Compute eigenvalues
+        eigvals(0) = v - c;
+        eigvals(1) = v;
+        eigvals(2) = v + c;
+
         return eigvals;
     }
 
     inline Eigen::MatrixXd eigenvectors(double v, double H) const
     {
+        double const c{ std::sqrt((gamma-1) * (H - 0.5*v*v)) };
+
         Eigen::MatrixXd eigvecs(n_vars, n_vars);
-        ///  ANCSE_COMMENT Compute eigenvectors
+
+        eigvecs(0) = std::make_tuple(1, v-c, H-vc);
+        eigvecs(1) = std::make_tuple(1, v, 0.5*v*v);
+        eigvecs(0) = std::make_tuple(1, v+c, H+vc);
 
         return eigvecs;
     }
