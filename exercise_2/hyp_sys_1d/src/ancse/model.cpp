@@ -12,7 +12,14 @@
 //----------------ModelEulerBegin----------------
 Eigen::VectorXd Euler::flux(const Eigen::VectorXd &u) const
 {
-    return Eigen::VectorXd::Zero(n_vars);
+    double rho, p, v;
+    std::tie(rho, p, v) = primitive(u);
+    double E = energy(rho, v, p);
+
+    Eigen::VectorXd flux(n_vars);
+    flux << u(1), u(1)*v+p, v*(E + p);
+
+    return flux;
 }
 
 Eigen::VectorXd Euler::eigenvalues(const Eigen::VectorXd &u) const
@@ -38,6 +45,8 @@ Eigen::MatrixXd Euler::eigenvectors(const Eigen::VectorXd &u) const
 
 double Euler::max_eigenvalue(const Eigen::VectorXd &u) const
 {
+    // From the asumption of hyperbolic equation
+    // and the constraint c > 0
     return u(2);
 }
 
