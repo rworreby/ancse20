@@ -16,9 +16,16 @@ double StandardCFLCondition <FVM>
     auto n_ghost = grid.n_ghost;
 
     double a_max = 0.0;
+    for (int i = n_ghost; i < n_cells - n_ghost; i++) {
+        double curr_max{ model->max_eigenvalue(u.col(i)) };
+        if(a_max < curr_max){
+            a_max = curr_max;
+        }
+    }
 
-    return 0.;
+    double const dt{ cfl_number * grid.dx / a_max };
 
+    return dt;
 }
 
 StandardCFLCondition <DG>
