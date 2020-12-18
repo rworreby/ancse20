@@ -24,7 +24,7 @@ deduce_numerical_flux(const nlohmann::json &config,
     REGISTER_NUMERICAL_FLUX("rusanov", CentralFlux, Rusanov(model))
     REGISTER_NUMERICAL_FLUX("roe", CentralFlux, Roe(model))
     REGISTER_NUMERICAL_FLUX("hll", CentralFlux, HLL(model))
-    REGISTER_NUMERICAL_FLUX("hllc", CentralFlux, HLLCEuler(model))
+    REGISTER_NUMERICAL_FLUX("hllc", HLLCEuler(model))
 
     if (model->get_name().compare("euler") == 0) {
         auto model_euler = std::dynamic_pointer_cast<Euler>(model);
