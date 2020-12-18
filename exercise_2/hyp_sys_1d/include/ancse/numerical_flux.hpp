@@ -146,7 +146,27 @@ class HLL {
     Eigen::VectorXd operator()(const Eigen::VectorXd &uL,
                                const Eigen::VectorXd &uR) const
     {
+        auto fL{ model->flux(uL) };
+        auto fR{ model->flux(uR) };
 
+        auto sL{ model->eigenvalues(uL).minCoeff() };
+        auto sR{ model->eigenvalues(uR).maxCoeff() };
+
+        auto roe_avg{ model->roe_avg(uL, uR) };
+        auto eigvals_roe{ model->eigenvalues(roe_avg) };
+
+        auto einfeldtL{ std::min(sL, eigvals_roe.minCoeff()) };
+        auto einfeldtR{ std::min(sR, eigvals_roe.maxCoeff()) };
+
+        if (sL >= 0) {
+            return fL;
+        }
+        else if (sR <= 0) {
+            return fR;
+        }
+        else {
+            return (sR*fL - sL*fR + sR*sL*(uR-uL)) / (sR-sL);
+        }
     }
 
   private:
@@ -169,7 +189,47 @@ class HLLCEuler {
     Eigen::VectorXd operator()(const Eigen::VectorXd &uL,
                                const Eigen::VectorXd &uR) const
     {
-        return Eigen::VectorXd();
+        auto fL{ model->flux(uL) };
+        auto cL{ model->sound_speed(uL) };
+        auto [rhoL, vL, pL] = model->primitive(uL);
+        Eigen::VectorXd eigvalsL = model->eigenvalues(vL, cL);
+        auto sL{ eigvalsL.minCoeff() };
+
+        auto fR{ model->flux(uR) };
+        auto cR{ model->sound_speed(uR) };
+        auto [rhoR, vR, pR] = model->primitive(uR);
+        Eigen::VectorXd eigvalsR = model->eigenvalues(vR, cR);
+        auto sR{ eigvalsR.minCoeff() };
+
+        auto sM{ ((rhoR*vR*(sR-vR) - rhoL*vL*(sL-vL) - (pR-pL)) /
+                 ((rhoR*(sR-vR) - rhoL*(sL-vL))) };
+        auto pM{ pR + rhoR*(vR-sM)*(vR-sR) };
+
+
+        auto roe_avg{ model->roe_avg(uL, uR) };
+        auto eigvals_roe{ model->eigenvalues(roe_avg) };
+
+        auto einfeldtL{ std::min(sL, eigvals_roe.minCoeff()) };
+        auto einfeldtR{ std::min(sR, eigvals_roe.maxCoeff()) };
+
+        if (sL > 0) {
+            return fL;
+        }
+        else if (sL <= 0 && 0 < sM) {
+            Eigen::VectorXd primL(n_vars);
+            primL << rhoL, vL, pL;
+            auto consL{ model->prim_to_cons(primL) };
+            return (fL + sL*(consL - uL));
+        }
+        else if (sM <= 0 && 0 < sR){
+            Eigen::VectorXd primR(n_vars);
+            primR << rhoR, vR, pR;
+            auto consR{ model->prim_to_cons(primR) };
+            return (fR + sR*(consR - uR));
+        }
+        else {
+            return fR;
+        }
     }
 
   private:
