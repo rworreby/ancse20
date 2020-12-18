@@ -48,7 +48,7 @@ class FVMRateOfChange : public RateOfChange {
         for (int i = grid.n_ghost-1; i < grid_lim; ++i) {
             for (size_t j = 0; j < fL.size(); j++) {
                 fL = fR;
-                std::tie(uL, uR) = reconstruction(u0, i);
+                std::tie(uL, uR) = reconstruction(i);
                 fR = numerical_flux(uL, uR);
                 // From -(fR - fL) = (fL - fR)
                 dudt.col(i) = (fL - fR) / dx;
