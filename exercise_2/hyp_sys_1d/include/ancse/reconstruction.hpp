@@ -50,7 +50,7 @@ private:
 };
 
 
-//----------------ReconstructionBegin----------------  
+//----------------ReconstructionBegin----------------
 enum {Conserved, Primitive};
 
 template <class SlopeLimiter, int ReconstructionVars>
@@ -78,12 +78,19 @@ class PWLinearReconstruction<SlopeLimiter, Conserved> {
                const Eigen::VectorXd &uc,
                const Eigen::VectorXd &ud) const
     {
+        auto sL{ ub - ua };
+        auto sM{ uc - ub };
+        auto sR{ ud - uc };
 
-        ///  ANCSE_COMMENT Implement here the reconstruction using conservative variables.
+        Eigen::VectorXd uL(ua.size());
+        Eigen::VectorXd uR(ua.size());
 
-        return {std::move(Eigen::VectorXd()), std::move(Eigen::VectorXd())};
+        for (size_t i = 0; i < ua.size(); i++) {
+            uL(i) = ub(i) + 0.5 * slope_limiter(sL(i), sM(i));
+            uR(i) = uc(i) + 0.5 * slope_limiter(sM(i), sR(i));
+        }
 
-
+        return {std::move(uL), std::move(uR)};
     }
 
   private:
@@ -102,7 +109,7 @@ class PWLinearReconstruction<SlopeLimiter, Primitive> {
     {
         up.resize(u.rows(),u.cols());
         for (int i = 0; i < u.cols(); ++i) {
-            ///  ANCSE_COMMENT Implement here the transformation from conservative to primitive.
+            u.col(i) = model->cons_to_prim(u.col(i));
         }
     }
 
@@ -120,13 +127,19 @@ class PWLinearReconstruction<SlopeLimiter, Primitive> {
                const Eigen::VectorXd &uc,
                const Eigen::VectorXd &ud) const
     {
+        auto sL{ ub - ua };
+        auto sM{ uc - ub };
+        auto sR{ ud - uc };
 
-        ///  ANCSE_COMMENT Implement here the reconstruction using primitive variables.
-        ///  ANCSE_COMMENT The transformation can be done above.
+        Eigen::VectorXd uL(ua.size());
+        Eigen::VectorXd uR(ua.size());
 
+        for (size_t i = 0; i < ua.size(); i++) {
+            uL(i) = ub(i) + 0.5 * slope_limiter(sL(i), sM(i));
+            uR(i) = uc(i) + 0.5 * slope_limiter(sM(i), sR(i));
+        }
 
-        return {std::move(Eigen::VectorXd()), std::move(Eigen::VectorXd())};
-
+        return {std::move(uL), std::move(uR)};
     }
 
   private:
@@ -135,7 +148,7 @@ class PWLinearReconstruction<SlopeLimiter, Primitive> {
 
     mutable Eigen::MatrixXd up;
 };
-//----------------ReconstructionEnd----------------  
+//----------------ReconstructionEnd----------------
 
 
 
