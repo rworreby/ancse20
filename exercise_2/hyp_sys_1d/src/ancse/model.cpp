@@ -45,7 +45,7 @@ Eigen::MatrixXd Euler::eigenvectors(const Eigen::VectorXd &u) const
 
 double Euler::max_eigenvalue(const Eigen::VectorXd &u) const
 {
-    return (eigenvalues(u).cwiseAbs()).maxCoeff());
+    return (eigenvalues(u).cwiseAbs()).maxCoeff();
 }
 
 Eigen::VectorXd Euler::cons_to_prim(const Eigen::VectorXd &u_cons) const
