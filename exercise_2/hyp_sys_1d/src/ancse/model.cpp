@@ -107,7 +107,7 @@ Eigen::VectorXd Euler::roe_avg(const Eigen::VectorXd &uL,
 std::shared_ptr<Model> make_model (const nlohmann::json &config)
 {
     REGISTER_MODEL("burgers", Burgers)
-    // implement and register your models here
+    REGISTER_MODEL("euler", Euler)
 
     throw std::runtime_error(
         fmt::format("Unknown model. {}", std::string(config["flux"])));
