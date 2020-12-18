@@ -33,18 +33,27 @@ class FVMRateOfChange : public RateOfChange {
     //----------------FVMRateOfChangeBegin----------------
     virtual void operator()(Eigen::MatrixXd &dudt,
                             const Eigen::MatrixXd &u0) const override {
-
-        // implement the flux loop here.
         auto n_cells = grid.n_cells;
         auto n_ghost = grid.n_ghost;
 
         double dx = grid.dx;
+        int const grid_lim{ grid.n_cells - grid.n_ghost };
+
         Eigen::VectorXd fL = Eigen::VectorXd::Zero(u0.rows());
         Eigen::VectorXd fR = Eigen::VectorXd::Zero(u0.rows());
         Eigen::VectorXd uL(u0.rows()), uR(u0.rows());
 
         reconstruction.set(u0);
-        // implement the flux loop here.
+
+        for (int i = grid.n_ghost-1; i < grid_lim; ++i) {
+            for (size_t j = 0; j < fL.size(); j++) {
+                fL = fR;
+                std::tie(uL, uR) = reconstruction(u0, i);
+                fR = numerical_flux(uL, uR);
+                // From -(fR - fL) = (fL - fR)
+                dudt.col(i) = (fL - fR) / dx;
+            }
+        }
     }
     //----------------FVMRateOfChangeEnd----------------
 
