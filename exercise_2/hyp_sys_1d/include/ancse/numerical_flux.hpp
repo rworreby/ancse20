@@ -155,9 +155,6 @@ class HLL {
         auto roe_avg{ model->roe_avg(uL, uR) };
         auto eigvals_roe{ model->eigenvalues(roe_avg) };
 
-        auto einfeldtL{ std::min(sL, eigvals_roe.minCoeff()) };
-        auto einfeldtR{ std::min(sR, eigvals_roe.maxCoeff()) };
-
         if (sL >= 0) {
             return fL;
         }
@@ -190,27 +187,20 @@ class HLLCEuler {
                                const Eigen::VectorXd &uR) const
     {
         auto fL{ model->flux(uL) };
-        auto cL{ model->sound_speed(uL) };
         auto [rhoL, vL, pL] = model->primitive(uL);
+        auto cL{ model->sound_speed(rhoL, pL) };
         Eigen::VectorXd eigvalsL = model->eigenvalues(vL, cL);
         auto sL{ eigvalsL.minCoeff() };
 
         auto fR{ model->flux(uR) };
-        auto cR{ model->sound_speed(uR) };
         auto [rhoR, vR, pR] = model->primitive(uR);
+        auto cR{ model->sound_speed(rhoR, pR) };
         Eigen::VectorXd eigvalsR = model->eigenvalues(vR, cR);
         auto sR{ eigvalsR.minCoeff() };
 
         auto sM{ ((rhoR*vR*(sR-vR) - rhoL*vL*(sL-vL) - (pR-pL)) /
-                 ((rhoR*(sR-vR) - rhoL*(sL-vL))) };
+                 ((rhoR*(sR-vR) - rhoL*(sL-vL)))) };
         auto pM{ pR + rhoR*(vR-sM)*(vR-sR) };
-
-
-        auto roe_avg{ model->roe_avg(uL, uR) };
-        auto eigvals_roe{ model->eigenvalues(roe_avg) };
-
-        auto einfeldtL{ std::min(sL, eigvals_roe.minCoeff()) };
-        auto einfeldtR{ std::min(sR, eigvals_roe.maxCoeff()) };
 
         if (sL > 0) {
             return fL;
