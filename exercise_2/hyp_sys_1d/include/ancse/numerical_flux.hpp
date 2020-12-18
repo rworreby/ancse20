@@ -89,7 +89,8 @@ class Rusanov {
     {
         double const max_eval{
             std::max(model->max_eigenvalue(uL),
-            model->max_eigenvalue(uR))
+                     model->max_eigenvalue(uR)
+                    )
         };
 
         auto fL{ model->flux(uL) };
@@ -116,7 +117,16 @@ class Roe{
     Eigen::VectorXd operator()(const Eigen::VectorXd &uL,
                                const Eigen::VectorXd &uR) const
     {
-        return Eigen::VectorXd();
+        auto fL{ model->flux(uL) };
+        auto fR{ model->flux(uR) };
+
+        auto roe_avg = model->roe_avg(uL, uR);
+        auto eigvals = model->eigenvalues(roe_avg);
+        auto eigvecs = model->eigenvectors(roe_avg);
+
+        return 0.5 * ((fL + fR) -
+                      eigvecs * eigvals * eigvecs.inverse() * (uR - uL)
+                     );
     }
 
   private:
@@ -136,7 +146,7 @@ class HLL {
     Eigen::VectorXd operator()(const Eigen::VectorXd &uL,
                                const Eigen::VectorXd &uR) const
     {
-        return Eigen::VectorXd();
+
     }
 
   private:
