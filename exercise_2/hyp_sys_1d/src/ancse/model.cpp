@@ -45,9 +45,7 @@ Eigen::MatrixXd Euler::eigenvectors(const Eigen::VectorXd &u) const
 
 double Euler::max_eigenvalue(const Eigen::VectorXd &u) const
 {
-    // From the asumption of hyperbolic equation
-    // and the constraint c > 0
-    return u(2);
+    return (eigenvalues(u).cwiseAbs()).maxCoeff());
 }
 
 Eigen::VectorXd Euler::cons_to_prim(const Eigen::VectorXd &u_cons) const
