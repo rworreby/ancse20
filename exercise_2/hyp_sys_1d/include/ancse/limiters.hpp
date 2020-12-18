@@ -20,26 +20,30 @@ inline double minmod(double a, double b, double c) {
 
 /// FVM slope limiters
 
-//----------------LimitersBegin----------------  
+//----------------LimitersBegin----------------
 struct MinMod {
     inline double operator()(double a, double b) const
     {
-        return 0.;
+        return minmod(a, b);
     }
 };
 
 struct SuperBee {
     inline double operator()(double sL, double sR) const {
-        return 0.;
+        double l{ minmod(sL, 2*sR) };
+        double r{ minmod(2*sL, sR) };
+
+        return maxmod(l, r);
     }
 };
 
 struct MonotonizedCentral {
     inline double operator()(double sL, double sR) const {
-        return 0.;
+        double ab{ sL + sR };
+        return minmod(2*sL, 0.5*ab, 2*sR);
     }
 };
-//----------------LimitersEnd----------------  
+//----------------LimitersEnd----------------
 
 
 /// DG limiters
