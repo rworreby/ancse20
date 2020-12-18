@@ -109,7 +109,7 @@ class PWLinearReconstruction<SlopeLimiter, Primitive> {
     {
         up.resize(u.rows(),u.cols());
         for (int i = 0; i < u.cols(); ++i) {
-            u.col(i) = model->cons_to_prim(u.col(i));
+            up.col(i) = model->cons_to_prim(u.col(i));
         }
     }
 
