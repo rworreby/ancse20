@@ -20,8 +20,11 @@ deduce_numerical_flux(const nlohmann::json &config,
                       const Reconstruction &reconstruction)
 {
     REGISTER_NUMERICAL_FLUX("central_flux", CentralFlux, CentralFlux(model))
-
-    // Register the other numerical fluxes.
+    REGISTER_NUMERICAL_FLUX("lax_friedrichs", CentralFlux, LaxFriedrichs(model))
+    REGISTER_NUMERICAL_FLUX("rusanov", CentralFlux, Rusanov(model))
+    REGISTER_NUMERICAL_FLUX("roe", CentralFlux, Roe(model))
+    REGISTER_NUMERICAL_FLUX("hll", CentralFlux, HLL(model))
+    REGISTER_NUMERICAL_FLUX("hllc", CentralFlux, HLLCEuler(model))
 
     if (model->get_name().compare("euler") == 0) {
         auto model_euler = std::dynamic_pointer_cast<Euler>(model);
